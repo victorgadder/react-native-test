@@ -6,7 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { AppThemeProvider, useTheme } from '@/src/design-system';
+import { AppThemeProvider, ThemeToggle, useTheme } from '@/src/design-system';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -70,7 +70,15 @@ function NavigationContent() {
         },
       }}
     >
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerRight: () => <ThemeToggle />,
+          headerStyle: {
+            backgroundColor: theme.colors.surface,
+          },
+          headerTintColor: theme.colors.text,
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="repository/[owner]/[repo]/index" options={{ title: 'Repositorio' }} />
         <Stack.Screen name="repository/[owner]/[repo]/issues" options={{ title: 'Issues' }} />

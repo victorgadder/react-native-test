@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { ThemeToggle, useTheme } from '@/src/design-system';
+import { Heading, Text, useTheme } from '@/src/design-system';
 
 export default function RepositorySearchScreen() {
   const { theme } = useTheme();
@@ -17,12 +17,13 @@ export default function RepositorySearchScreen() {
         },
       ]}
     >
-      <Text style={[styles.eyebrow, { color: theme.colors.primary }]}>GitHub Explorer</Text>
-      <Text style={[styles.title, { color: theme.colors.text }]}>Busca de repositorios</Text>
-      <Text style={[styles.description, { color: theme.colors.muted }]}>
+      <Text size="sm" tone="primary" variant="label" weight="bold">
+        GitHub Explorer
+      </Text>
+      <Heading>Busca de repositorios</Heading>
+      <Text tone="muted">
         Esta tela recebera o campo de busca, a lista paginada, pull-to-refresh e estados de erro.
       </Text>
-      <ThemeToggle />
     </View>
   );
 }
@@ -31,18 +32,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-  },
-  eyebrow: {
-    fontSize: 14,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '800',
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
   },
 });
