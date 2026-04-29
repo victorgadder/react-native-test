@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function RepositorySearchScreen() {
+export default function DesignSystemShowcaseScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.eyebrow}>GitHub Explorer</Text>
-      <Text style={styles.title}>Busca de repositorios</Text>
+      <Text style={styles.eyebrow}>Showcase</Text>
+      <Text style={styles.title}>Design System</Text>
       <Text style={styles.description}>
-        Esta tela recebera o campo de busca, a lista paginada, pull-to-refresh e estados de erro.
+        Esta tela exibira tokens, temas e componentes base em variacoes, tamanhos e estados.
       </Text>
     </View>
   );

@@ -1,12 +1,22 @@
+import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function RepositorySearchScreen() {
+type RepositoryIssuesParams = {
+  owner?: string;
+  repo?: string;
+};
+
+export default function RepositoryIssuesScreen() {
+  const { owner, repo } = useLocalSearchParams<RepositoryIssuesParams>();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.eyebrow}>GitHub Explorer</Text>
-      <Text style={styles.title}>Busca de repositorios</Text>
+      <Text style={styles.eyebrow}>Issues abertas</Text>
+      <Text style={styles.title}>
+        {owner}/{repo}
+      </Text>
       <Text style={styles.description}>
-        Esta tela recebera o campo de busca, a lista paginada, pull-to-refresh e estados de erro.
+        Esta tela exibira issues paginadas, labels, autor, data relativa e pull-to-refresh.
       </Text>
     </View>
   );
@@ -16,7 +26,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: 12,
-    justifyContent: 'flex-start',
     padding: 24,
     paddingTop: 40,
     backgroundColor: '#ffffff',
