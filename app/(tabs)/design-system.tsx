@@ -1,6 +1,17 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import { Button, Heading, Text, useTheme } from '@/src/design-system';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Heading,
+  Input,
+  Surface,
+  Tag,
+  Text,
+  useTheme,
+} from '@/src/design-system';
 
 export default function DesignSystemShowcaseScreen() {
   const { theme } = useTheme();
@@ -28,7 +39,7 @@ export default function DesignSystemShowcaseScreen() {
         </Text>
         <Heading>Design System</Heading>
         <Text tone="muted">
-          Esta tela exibira tokens, temas e componentes base em variacoes, tamanhos e estados.
+          Esta tela exibirá tokens, temas e componentes base em variações, tamanhos e estados.
         </Text>
       </View>
 
@@ -60,6 +71,56 @@ export default function DesignSystemShowcaseScreen() {
         <View style={styles.row}>
           <Button loading>Loading</Button>
           <Button disabled>Disabled</Button>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Heading level={2}>Inputs</Heading>
+        <Input
+          label="Busca"
+          placeholder="react native"
+          helperText="Digite ao menos 2 caracteres."
+        />
+        <Input label="Com erro" value="r" error="Informe uma busca mais especifica." />
+        <Input editable={false} label="Desabilitado" value="typescript" />
+      </View>
+
+      <View style={styles.section}>
+        <Heading level={2}>Surfaces</Heading>
+        <Surface>
+          <Heading level={3}>Surface padrao</Heading>
+          <Text tone="muted">Container base para blocos simples de conteudo.</Text>
+        </Surface>
+        <Card elevated padding="lg">
+          <Heading level={3}>Card elevado</Heading>
+          <Text tone="muted">Usado para itens repetidos, como repositorios e issues.</Text>
+        </Card>
+      </View>
+
+      <View style={styles.section}>
+        <Heading level={2}>Badges e tags</Heading>
+        <View style={styles.row}>
+          <Badge>Primary</Badge>
+          <Badge tone="success">Success</Badge>
+          <Badge tone="warning">Warning</Badge>
+          <Badge tone="danger">Danger</Badge>
+          <Tag tone="muted" variant="outline">
+            TypeScript
+          </Tag>
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <Heading level={2}>Avatares</Heading>
+        <View style={styles.row}>
+          <Avatar name="GitHub User" size="sm" />
+          <Avatar name="Victor Gadder" />
+          <Avatar name="Open Source" size="lg" />
+          <Avatar
+            name="GitHub Octocat"
+            size="xl"
+            sourceUri="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+          />
         </View>
       </View>
     </ScrollView>

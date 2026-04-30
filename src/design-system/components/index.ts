@@ -1,7 +1,15 @@
+export { Avatar } from './Avatar';
+export type { AvatarProps } from './Avatar';
+export { Badge, Tag } from './Badge';
+export type { BadgeProps } from './Badge';
 export { Button } from './Button';
 export type { ButtonProps } from './Button';
 export { Heading } from './Heading';
 export type { HeadingProps } from './Heading';
+export { Input } from './Input';
+export type { InputProps } from './Input';
+export { Card, Surface } from './Surface';
+export type { SurfaceProps } from './Surface';
 export { Text } from './Text';
 export type { TextProps } from './Text';
 export { ThemeToggle } from './ThemeToggle';
