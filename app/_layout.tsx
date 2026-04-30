@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { AppThemeProvider, ThemeToggle, useTheme } from '@/src/design-system';
+import { QueryProvider } from '@/src/services/query';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -46,9 +47,11 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <AppThemeProvider>
-      <NavigationContent />
-    </AppThemeProvider>
+    <QueryProvider>
+      <AppThemeProvider>
+        <NavigationContent />
+      </AppThemeProvider>
+    </QueryProvider>
   );
 }
 
