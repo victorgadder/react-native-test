@@ -60,6 +60,8 @@ EXPO_PUBLIC_GITHUB_TOKEN=seu_token
 
 O arquivo `.env` está no `.gitignore`. O repositório mantém apenas o `.env.example` como referência.
 
+O app também aceita `GITHUB_TOKEN` como fallback, mas em projetos Expo o nome com `EXPO_PUBLIC_` é o caminho mais direto para disponibilizar a variável no bundle.
+
 ## Scripts
 
 ```bash

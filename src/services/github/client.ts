@@ -19,7 +19,7 @@ function buildUrl(path: string, params?: RequestParams) {
 }
 
 async function requestGitHub<T>(path: string, params?: RequestParams): Promise<T> {
-  const token = process.env.EXPO_PUBLIC_GITHUB_TOKEN;
+  const token = process.env.EXPO_PUBLIC_GITHUB_TOKEN ?? process.env.GITHUB_TOKEN;
 
   try {
     const response = await fetch(buildUrl(path, params), {
