@@ -1,15 +1,8 @@
 import { Stack } from 'expo-router';
 import { useMemo } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ListRenderItem,
-  RefreshControl,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from 'react-native';
 
-import { Button, Heading, Surface, Text, useTheme } from '@/src/design-system';
+import { Button, Heading, Skeleton, Surface, Text, useTheme } from '@/src/design-system';
 import type { GitHubIssue } from '@/src/services/github';
 
 import { IssueCard } from './IssueCard';
@@ -35,6 +28,11 @@ export function RepositoryIssuesScreen({ owner, repo }: RepositoryIssuesScreenPr
     () => issuesQuery.data?.pages.flatMap((page) => page) ?? [],
     [issuesQuery.data],
   );
+  const shouldShowEndOfList =
+    issues.length > 0 &&
+    !issuesQuery.hasNextPage &&
+    !issuesQuery.isFetchingNextPage &&
+    !issuesQuery.isLoading;
 
   const handleRefresh = () => {
     issuesQuery.refetch();
@@ -78,14 +76,14 @@ export function RepositoryIssuesScreen({ owner, repo }: RepositoryIssuesScreenPr
           <IssuesEmptyState
             errorMessage={issuesQuery.isError ? getErrorMessage(issuesQuery.error) : undefined}
             isLoading={issuesQuery.isLoading}
+            onRetry={() => issuesQuery.refetch()}
           />
         }
         ListFooterComponent={
-          issuesQuery.isFetchingNextPage ? (
-            <View style={styles.footer}>
-              <ActivityIndicator color={theme.colors.primary} />
-            </View>
-          ) : null
+          <IssuesFooter
+            hasEndMessage={shouldShowEndOfList}
+            isFetchingNextPage={issuesQuery.isFetchingNextPage}
+          />
         }
         ListHeaderComponent={
           <View style={styles.header}>
@@ -118,16 +116,12 @@ export function RepositoryIssuesScreen({ owner, repo }: RepositoryIssuesScreenPr
 type IssuesEmptyStateProps = {
   errorMessage?: string;
   isLoading: boolean;
+  onRetry: () => void;
 };
 
-function IssuesEmptyState({ errorMessage, isLoading }: IssuesEmptyStateProps) {
+function IssuesEmptyState({ errorMessage, isLoading, onRetry }: IssuesEmptyStateProps) {
   if (isLoading) {
-    return (
-      <ScreenState>
-        <ActivityIndicator />
-        <Text tone="muted">Carregando issues...</Text>
-      </ScreenState>
-    );
+    return <Skeleton lines={4} />;
   }
 
   if (errorMessage) {
@@ -137,8 +131,8 @@ function IssuesEmptyState({ errorMessage, isLoading }: IssuesEmptyStateProps) {
           Algo deu errado
         </Heading>
         <Text tone="muted">{errorMessage}</Text>
-        <Button onPress={() => undefined} variant="outline">
-          Tente puxar para atualizar
+        <Button onPress={onRetry} variant="outline">
+          Tentar novamente
         </Button>
       </ScreenState>
     );
@@ -150,6 +144,29 @@ function IssuesEmptyState({ errorMessage, isLoading }: IssuesEmptyStateProps) {
       <Text tone="muted">Este repositório não possui issues abertas no momento.</Text>
     </ScreenState>
   );
+}
+
+type IssuesFooterProps = {
+  hasEndMessage: boolean;
+  isFetchingNextPage: boolean;
+};
+
+function IssuesFooter({ hasEndMessage, isFetchingNextPage }: IssuesFooterProps) {
+  if (isFetchingNextPage) {
+    return <Skeleton lines={2} />;
+  }
+
+  if (hasEndMessage) {
+    return (
+      <View style={styles.footer}>
+        <Text size="sm" tone="muted">
+          Fim das issues abertas.
+        </Text>
+      </View>
+    );
+  }
+
+  return null;
 }
 
 type ScreenStateProps = {
@@ -168,6 +185,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   footer: {
+    alignItems: 'center',
     paddingVertical: 16,
   },
   header: {

@@ -10,6 +10,8 @@ export { Input } from './Input';
 export type { InputProps } from './Input';
 export { Card, Surface } from './Surface';
 export type { SurfaceProps } from './Surface';
+export { Skeleton } from './Skeleton';
+export type { SkeletonProps } from './Skeleton';
 export { Text } from './Text';
 export type { TextProps } from './Text';
 export { ThemeToggle } from './ThemeToggle';

@@ -20,7 +20,7 @@ afterEach(() => {
 });
 
 describe('<RepositorySearchScreen />', () => {
-  it('renders the search screen placeholder', () => {
+  it('renders the search screen', () => {
     render(
       <QueryProvider>
         <AppThemeProvider>

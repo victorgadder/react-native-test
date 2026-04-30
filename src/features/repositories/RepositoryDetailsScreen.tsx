@@ -1,8 +1,19 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Href, Stack, useRouter } from 'expo-router';
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
 
-import { Avatar, Badge, Button, Card, Heading, Surface, Text, useTheme } from '@/src/design-system';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Heading,
+  Skeleton,
+  Surface,
+  Text,
+  useTheme,
+} from '@/src/design-system';
+import { formatCount } from '@/src/utils';
 
 import { useRepositoryDetails } from './hooks';
 
@@ -19,17 +30,8 @@ function getErrorMessage(error: unknown) {
   return 'Não foi possível carregar os detalhes do repositório. Tente novamente.';
 }
 
-function formatCount(value: number) {
-  if (value >= 1000) {
-    return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}k`;
-  }
-
-  return String(value);
-}
-
 export function RepositoryDetailsScreen({ owner, repo }: RepositoryDetailsScreenProps) {
   const router = useRouter();
-  const { theme } = useTheme();
   const repositoryQuery = useRepositoryDetails(owner, repo);
   const repository = repositoryQuery.data;
 
@@ -57,10 +59,8 @@ export function RepositoryDetailsScreen({ owner, repo }: RepositoryDetailsScreen
   if (repositoryQuery.isLoading) {
     return (
       <ScreenShell>
-        <Surface>
-          <ActivityIndicator color={theme.colors.primary} />
-          <Text tone="muted">Carregando detalhes do repositório...</Text>
-        </Surface>
+        <Skeleton lines={5} />
+        <Skeleton lines={3} />
       </ScreenShell>
     );
   }
@@ -113,9 +113,14 @@ export function RepositoryDetailsScreen({ owner, repo }: RepositoryDetailsScreen
           <MetricCard icon="eye" label="Watchers" value={formatCount(repository.watchers_count)} />
         </View>
 
-        <Button onPress={handleOpenIssues} size="lg">
-          Abrir issues
-        </Button>
+        <View style={styles.actions}>
+          <Button onPress={handleOpenIssues} size="lg">
+            Abrir issues
+          </Button>
+          <Button onPress={() => Linking.openURL(repository.html_url)} size="lg" variant="outline">
+            Abrir no GitHub
+          </Button>
+        </View>
       </ScreenShell>
     </>
   );
@@ -168,6 +173,12 @@ function MetricCard({ icon, label, value }: MetricCardProps) {
 }
 
 const styles = StyleSheet.create({
+  actions: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
   badgeRow: {
     alignItems: 'center',
     flexDirection: 'row',

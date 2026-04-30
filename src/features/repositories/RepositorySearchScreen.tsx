@@ -1,19 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Href, useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ListRenderItem,
-  RefreshControl,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { FlatList, ListRenderItem, RefreshControl, StyleSheet, View } from 'react-native';
 
-import { Button, Heading, Input, Surface, Text, useTheme } from '@/src/design-system';
+import { Button, Heading, Input, Skeleton, Surface, Text, useTheme } from '@/src/design-system';
 import { GitHubRepository } from '@/src/services/github';
+import { useDebouncedValue } from '@/src/utils/hooks';
 
 import { RepositoryCard } from './RepositoryCard';
 import { useSearchRepositories } from './hooks';
+
+const LAST_SEARCH_STORAGE_KEY = '@react-native-test/last-search';
+const DEFAULT_SEARCH = 'react native';
 
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
@@ -26,9 +24,26 @@ function getErrorMessage(error: unknown) {
 export function RepositorySearchScreen() {
   const router = useRouter();
   const { theme } = useTheme();
-  const [query, setQuery] = useState('react native');
-  const searchQuery = query.trim();
+  const [query, setQuery] = useState(DEFAULT_SEARCH);
+  const debouncedQuery = useDebouncedValue(query, 500);
+  const searchQuery = debouncedQuery.trim();
   const repositoriesQuery = useSearchRepositories(searchQuery);
+
+  useEffect(() => {
+    AsyncStorage.getItem(LAST_SEARCH_STORAGE_KEY).then((storedQuery) => {
+      if (storedQuery) {
+        setQuery(storedQuery);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    const normalizedQuery = query.trim();
+
+    if (normalizedQuery.length >= 2) {
+      AsyncStorage.setItem(LAST_SEARCH_STORAGE_KEY, normalizedQuery);
+    }
+  }, [query]);
 
   const repositories = useMemo(
     () => repositoriesQuery.data?.pages.flatMap((page) => page.items) ?? [],
@@ -41,6 +56,11 @@ export function RepositorySearchScreen() {
     !repositoriesQuery.isError &&
     searchQuery.length >= 2 &&
     repositories.length === 0;
+  const shouldShowEndOfList =
+    repositories.length > 0 &&
+    !repositoriesQuery.hasNextPage &&
+    !repositoriesQuery.isFetchingNextPage &&
+    !repositoriesQuery.isLoading;
 
   const handleRefresh = () => {
     repositoriesQuery.refetch();
@@ -50,6 +70,11 @@ export function RepositorySearchScreen() {
     if (repositoriesQuery.hasNextPage && !repositoriesQuery.isFetchingNextPage) {
       repositoriesQuery.fetchNextPage();
     }
+  };
+
+  const handleClearSearch = () => {
+    setQuery('');
+    AsyncStorage.removeItem(LAST_SEARCH_STORAGE_KEY);
   };
 
   const renderRepository: ListRenderItem<GitHubRepository> = ({ item }) => (
@@ -83,6 +108,7 @@ export function RepositorySearchScreen() {
           <Heading>Busca de repositórios</Heading>
           <Text tone="muted">Encontre repositórios públicos do GitHub ordenados por estrelas.</Text>
           <Input
+            accessibilityLabel="Termo de busca"
             autoCapitalize="none"
             autoCorrect={false}
             helperText="Exemplos: react native, typescript, expo"
@@ -92,6 +118,11 @@ export function RepositorySearchScreen() {
             returnKeyType="search"
             value={query}
           />
+          {query.length > 0 ? (
+            <Button onPress={handleClearSearch} size="sm" variant="ghost">
+              Limpar busca
+            </Button>
+          ) : null}
         </View>
       </View>
 
@@ -112,17 +143,17 @@ export function RepositorySearchScreen() {
             errorMessage={
               repositoriesQuery.isError ? getErrorMessage(repositoriesQuery.error) : undefined
             }
-            isLoading={repositoriesQuery.isLoading}
+            isLoading={repositoriesQuery.isLoading || query.trim() !== searchQuery}
             noResults={shouldShowNoResults}
+            onRetry={() => repositoriesQuery.refetch()}
             waitingForQuery={shouldShowInitialEmpty}
           />
         }
         ListFooterComponent={
-          repositoriesQuery.isFetchingNextPage ? (
-            <View style={styles.footer}>
-              <ActivityIndicator color={theme.colors.primary} />
-            </View>
-          ) : null
+          <SearchFooter
+            hasEndMessage={shouldShowEndOfList}
+            isFetchingNextPage={repositoriesQuery.isFetchingNextPage}
+          />
         }
         onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
@@ -145,6 +176,7 @@ type SearchEmptyStateProps = {
   errorMessage?: string;
   isLoading: boolean;
   noResults: boolean;
+  onRetry: () => void;
   waitingForQuery: boolean;
 };
 
@@ -152,17 +184,11 @@ function SearchEmptyState({
   errorMessage,
   isLoading,
   noResults,
+  onRetry,
   waitingForQuery,
 }: SearchEmptyStateProps) {
-  const { theme } = useTheme();
-
   if (isLoading) {
-    return (
-      <Surface>
-        <ActivityIndicator color={theme.colors.primary} />
-        <Text tone="muted">Buscando repositórios...</Text>
-      </Surface>
-    );
+    return <Skeleton lines={4} />;
   }
 
   if (errorMessage) {
@@ -172,8 +198,8 @@ function SearchEmptyState({
           Algo deu errado
         </Heading>
         <Text tone="muted">{errorMessage}</Text>
-        <Button onPress={() => undefined} variant="outline">
-          Tente puxar para atualizar
+        <Button onPress={onRetry} variant="outline">
+          Tentar novamente
         </Button>
       </Surface>
     );
@@ -200,6 +226,31 @@ function SearchEmptyState({
   return null;
 }
 
+type SearchFooterProps = {
+  hasEndMessage: boolean;
+  isFetchingNextPage: boolean;
+};
+
+function SearchFooter({ hasEndMessage, isFetchingNextPage }: SearchFooterProps) {
+  const { theme } = useTheme();
+
+  if (isFetchingNextPage) {
+    return <Skeleton lines={2} />;
+  }
+
+  if (hasEndMessage) {
+    return (
+      <View style={styles.footer}>
+        <Text size="sm" tone="muted">
+          Fim dos resultados.
+        </Text>
+      </View>
+    );
+  }
+
+  return <View style={[styles.footer, { backgroundColor: theme.colors.background }]} />;
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -211,6 +262,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   footer: {
+    alignItems: 'center',
     paddingVertical: 16,
   },
   header: {

@@ -1,6 +1,6 @@
-import { StyleSheet, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 
-import { Avatar, Badge, Card, Heading, Text } from '@/src/design-system';
+import { Avatar, Badge, Button, Card, Heading, Text } from '@/src/design-system';
 import type { GitHubIssue } from '@/src/services/github';
 import { formatRelativeDate } from '@/src/utils';
 
@@ -34,6 +34,10 @@ export function IssueCard({ issue }: IssueCardProps) {
           Sem labels
         </Text>
       )}
+
+      <Button onPress={() => Linking.openURL(issue.html_url)} size="sm" variant="ghost">
+        Abrir no GitHub
+      </Button>
     </Card>
   );
 }

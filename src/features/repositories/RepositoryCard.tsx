@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Avatar, Badge, Card, Heading, Text, useTheme } from '@/src/design-system';
 import type { GitHubRepository } from '@/src/services/github';
+import { formatCount } from '@/src/utils';
 
 export type RepositoryCardProps = {
   onPress: () => void;
@@ -11,14 +12,6 @@ export type RepositoryCardProps = {
 };
 
 const DEFAULT_DESCRIPTION_LINES = 7;
-
-function formatCount(value: number) {
-  if (value >= 1000) {
-    return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}k`;
-  }
-
-  return String(value);
-}
 
 export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
   const { theme } = useTheme();
@@ -50,7 +43,13 @@ export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
   };
 
   return (
-    <Pressable accessibilityRole="button" onPress={onPress} style={styles.pressable}>
+    <Pressable
+      accessibilityHint="Abre a tela de detalhes do repositório"
+      accessibilityLabel={`Abrir detalhes de ${repository.full_name}`}
+      accessibilityRole="button"
+      onPress={onPress}
+      style={styles.pressable}
+    >
       {({ pressed }) => (
         <Card elevated={pressed}>
           <View style={styles.header}>
@@ -82,6 +81,7 @@ export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
               <View style={styles.descriptionActions}>
                 {hasDescriptionFullyVisible ? (
                   <Text
+                    accessibilityRole="button"
                     onPress={(event) => {
                       event.stopPropagation();
                       handleCollapse();
@@ -95,6 +95,7 @@ export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
                 ) : (
                   <>
                     <Text
+                      accessibilityRole="button"
                       onPress={(event) => {
                         event.stopPropagation();
                         handleReadMore();
@@ -106,6 +107,7 @@ export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
                       ler mais
                     </Text>
                     <Text
+                      accessibilityRole="button"
                       onPress={(event) => {
                         event.stopPropagation();
                         handleReadAll();
