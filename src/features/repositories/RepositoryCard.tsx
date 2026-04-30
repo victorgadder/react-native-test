@@ -1,4 +1,5 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Avatar, Badge, Card, Heading, Text, useTheme } from '@/src/design-system';
@@ -8,6 +9,8 @@ export type RepositoryCardProps = {
   onPress: () => void;
   repository: GitHubRepository;
 };
+
+const DEFAULT_DESCRIPTION_LINES = 7;
 
 function formatCount(value: number) {
   if (value >= 1000) {
@@ -19,6 +22,32 @@ function formatCount(value: number) {
 
 export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
   const { theme } = useTheme();
+  const [descriptionLineCount, setDescriptionLineCount] = useState(0);
+  const [visibleDescriptionLines, setVisibleDescriptionLines] = useState(DEFAULT_DESCRIPTION_LINES);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const description = repository.description ?? 'Repositório sem descrição.';
+
+  const descriptionNumberOfLines = isDescriptionExpanded ? undefined : visibleDescriptionLines;
+  const hasLongDescription = useMemo(
+    () => descriptionLineCount > DEFAULT_DESCRIPTION_LINES || description.length > 320,
+    [description.length, descriptionLineCount],
+  );
+  const hasDescriptionFullyVisible =
+    isDescriptionExpanded ||
+    (descriptionLineCount > 0 && visibleDescriptionLines >= descriptionLineCount);
+
+  const handleReadMore = () => {
+    setVisibleDescriptionLines((current) => current + DEFAULT_DESCRIPTION_LINES);
+  };
+
+  const handleReadAll = () => {
+    setIsDescriptionExpanded(true);
+  };
+
+  const handleCollapse = () => {
+    setIsDescriptionExpanded(false);
+    setVisibleDescriptionLines(DEFAULT_DESCRIPTION_LINES);
+  };
 
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.pressable}>
@@ -38,11 +67,60 @@ export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
             </View>
           </View>
 
-          {repository.description ? (
-            <Text tone="muted">{repository.description}</Text>
-          ) : (
-            <Text tone="muted">Repositorio sem descricao.</Text>
-          )}
+          <View style={styles.descriptionBlock}>
+            <Text
+              numberOfLines={descriptionNumberOfLines}
+              onTextLayout={(event) => {
+                setDescriptionLineCount(event.nativeEvent.lines.length);
+              }}
+              tone="muted"
+            >
+              {description}
+            </Text>
+
+            {hasLongDescription ? (
+              <View style={styles.descriptionActions}>
+                {hasDescriptionFullyVisible ? (
+                  <Text
+                    onPress={(event) => {
+                      event.stopPropagation();
+                      handleCollapse();
+                    }}
+                    size="sm"
+                    tone="primary"
+                    weight="bold"
+                  >
+                    recolher descrição
+                  </Text>
+                ) : (
+                  <>
+                    <Text
+                      onPress={(event) => {
+                        event.stopPropagation();
+                        handleReadMore();
+                      }}
+                      size="sm"
+                      tone="primary"
+                      weight="bold"
+                    >
+                      ler mais
+                    </Text>
+                    <Text
+                      onPress={(event) => {
+                        event.stopPropagation();
+                        handleReadAll();
+                      }}
+                      size="sm"
+                      tone="primary"
+                      weight="bold"
+                    >
+                      ler tudo
+                    </Text>
+                  </>
+                )}
+              </View>
+            ) : null}
+          </View>
 
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>
@@ -60,6 +138,14 @@ export function RepositoryCard({ onPress, repository }: RepositoryCardProps) {
 }
 
 const styles = StyleSheet.create({
+  descriptionActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
+  },
+  descriptionBlock: {
+    gap: 8,
+  },
   header: {
     alignItems: 'center',
     flexDirection: 'row',

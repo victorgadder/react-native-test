@@ -29,6 +29,6 @@ describe('<RepositorySearchScreen />', () => {
       </QueryProvider>,
     );
 
-    expect(screen.getByText('Busca de repositorios')).toBeTruthy();
+    expect(screen.getByText('Busca de repositórios')).toBeTruthy();
   });
 });

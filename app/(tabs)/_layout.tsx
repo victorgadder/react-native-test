@@ -8,7 +8,7 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome size={18} style={{ marginBottom: -2 }} {...props} />;
 }
 
 export default function TabLayout() {
@@ -24,6 +24,17 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.border,
+          height: 64,
+          paddingBottom: 8,
+          paddingTop: 6,
+        },
+        tabBarItemStyle: {
+          minHeight: 52,
+        },
+        tabBarLabelStyle: {
+          fontSize: 10,
+          letterSpacing: 0,
+          lineHeight: 13,
         },
         headerStyle: {
           backgroundColor: theme.colors.surface,
@@ -42,7 +53,8 @@ export default function TabLayout() {
       <Tabs.Screen
         name="design-system"
         options={{
-          title: 'Design System',
+          tabBarLabel: 'Design',
+          title: 'Sistema de Design',
           tabBarIcon: ({ color }) => <TabBarIcon name="paint-brush" color={color} />,
         }}
       />

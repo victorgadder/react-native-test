@@ -68,43 +68,24 @@ export function RepositorySearchScreen() {
   );
 
   return (
-    <FlatList
-      contentContainerStyle={[
-        styles.content,
-        {
-          backgroundColor: theme.colors.background,
-          gap: theme.spacing.md,
-          padding: theme.spacing.lg,
-          paddingTop: theme.spacing.xl,
-        },
-      ]}
-      data={repositories}
-      keyExtractor={(item) => String(item.id)}
-      keyboardShouldPersistTaps="handled"
-      ListEmptyComponent={
-        <SearchEmptyState
-          errorMessage={
-            repositoriesQuery.isError ? getErrorMessage(repositoriesQuery.error) : undefined
-          }
-          isLoading={repositoriesQuery.isLoading}
-          noResults={shouldShowNoResults}
-          waitingForQuery={shouldShowInitialEmpty}
-        />
-      }
-      ListFooterComponent={
-        repositoriesQuery.isFetchingNextPage ? (
-          <View style={styles.footer}>
-            <ActivityIndicator color={theme.colors.primary} />
-          </View>
-        ) : null
-      }
-      ListHeaderComponent={
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View
+        style={[
+          styles.fixedHeader,
+          {
+            backgroundColor: theme.colors.background,
+            borderBottomColor: theme.colors.border,
+            gap: theme.spacing.md,
+            padding: theme.spacing.lg,
+          },
+        ]}
+      >
         <View style={styles.header}>
           <Text size="sm" tone="primary" variant="label" weight="bold">
             GitHub Explorer
           </Text>
-          <Heading>Busca de repositorios</Heading>
-          <Text tone="muted">Encontre repositorios publicos do GitHub ordenados por estrelas.</Text>
+          <Heading>Busca de repositórios</Heading>
+          <Text tone="muted">Encontre repositórios públicos do GitHub ordenados por estrelas.</Text>
           <Input
             autoCapitalize="none"
             autoCorrect={false}
@@ -116,20 +97,51 @@ export function RepositorySearchScreen() {
             value={query}
           />
         </View>
-      }
-      onEndReached={handleEndReached}
-      onEndReachedThreshold={0.5}
-      refreshControl={
-        <RefreshControl
-          colors={[theme.colors.primary]}
-          onRefresh={handleRefresh}
-          refreshing={repositoriesQuery.isRefetching && !repositoriesQuery.isFetchingNextPage}
-          tintColor={theme.colors.primary}
-        />
-      }
-      renderItem={renderRepository}
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    />
+      </View>
+
+      <FlatList
+        contentContainerStyle={[
+          styles.content,
+          {
+            backgroundColor: theme.colors.background,
+            gap: theme.spacing.md,
+            padding: theme.spacing.lg,
+          },
+        ]}
+        data={repositories}
+        keyExtractor={(item) => String(item.id)}
+        keyboardShouldPersistTaps="handled"
+        ListEmptyComponent={
+          <SearchEmptyState
+            errorMessage={
+              repositoriesQuery.isError ? getErrorMessage(repositoriesQuery.error) : undefined
+            }
+            isLoading={repositoriesQuery.isLoading}
+            noResults={shouldShowNoResults}
+            waitingForQuery={shouldShowInitialEmpty}
+          />
+        }
+        ListFooterComponent={
+          repositoriesQuery.isFetchingNextPage ? (
+            <View style={styles.footer}>
+              <ActivityIndicator color={theme.colors.primary} />
+            </View>
+          ) : null
+        }
+        onEndReached={handleEndReached}
+        onEndReachedThreshold={0.5}
+        refreshControl={
+          <RefreshControl
+            colors={[theme.colors.primary]}
+            onRefresh={handleRefresh}
+            refreshing={repositoriesQuery.isRefetching && !repositoriesQuery.isFetchingNextPage}
+            tintColor={theme.colors.primary}
+          />
+        }
+        renderItem={renderRepository}
+        style={styles.list}
+      />
+    </View>
   );
 }
 
@@ -199,10 +211,16 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
   },
+  fixedHeader: {
+    borderBottomWidth: 1,
+  },
   footer: {
     paddingVertical: 16,
   },
   header: {
     gap: 12,
+  },
+  list: {
+    flex: 1,
   },
 });
