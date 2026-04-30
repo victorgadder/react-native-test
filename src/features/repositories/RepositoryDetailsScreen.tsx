@@ -1,5 +1,5 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Stack, useRouter } from 'expo-router';
+import { Href, Stack, useRouter } from 'expo-router';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Avatar, Badge, Button, Card, Heading, Surface, Text, useTheme } from '@/src/design-system';
@@ -38,13 +38,7 @@ export function RepositoryDetailsScreen({ owner, repo }: RepositoryDetailsScreen
       return;
     }
 
-    router.push({
-      pathname: '/repository/[owner]/[repo]/issues',
-      params: {
-        owner,
-        repo,
-      },
-    });
+    router.push(`/repository/${owner}/${repo}/issues` as Href);
   };
 
   if (!owner || !repo) {
