@@ -19,7 +19,7 @@ export function QueryProvider({ children }: PropsWithChildren) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            gcTime: 1000 * 60 * 30,
+            gcTime: process.env.NODE_ENV === 'test' ? Infinity : 1000 * 60 * 30,
             refetchOnMount: false,
             refetchOnReconnect: true,
             retry: 1,
