@@ -83,7 +83,7 @@ function NavigationContent() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="repository/[owner]/[repo]/index" options={{ title: 'Repositorio' }} />
+        <Stack.Screen name="repository/[owner]/[repo]/index" options={{ title: 'Repositório' }} />
         <Stack.Screen name="repository/[owner]/[repo]/issues" options={{ title: 'Issues' }} />
       </Stack>
     </ThemeProvider>

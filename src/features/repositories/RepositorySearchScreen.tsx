@@ -11,7 +11,6 @@ import { RepositoryCard } from './RepositoryCard';
 import { useSearchRepositories } from './hooks';
 
 const LAST_SEARCH_STORAGE_KEY = '@react-native-test/last-search';
-const DEFAULT_SEARCH = 'react native';
 
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
@@ -24,7 +23,7 @@ function getErrorMessage(error: unknown) {
 export function RepositorySearchScreen() {
   const router = useRouter();
   const { theme } = useTheme();
-  const [query, setQuery] = useState(DEFAULT_SEARCH);
+  const [query, setQuery] = useState('');
   const debouncedQuery = useDebouncedValue(query, 500);
   const searchQuery = debouncedQuery.trim();
   const repositoriesQuery = useSearchRepositories(searchQuery);

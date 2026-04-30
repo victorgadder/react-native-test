@@ -20,7 +20,7 @@ afterEach(() => {
 });
 
 describe('<RepositorySearchScreen />', () => {
-  it('renders the search screen', () => {
+  it('renders the search screen with an empty initial state', () => {
     render(
       <QueryProvider>
         <AppThemeProvider>
@@ -30,5 +30,6 @@ describe('<RepositorySearchScreen />', () => {
     );
 
     expect(screen.getByText('Busca de repositórios')).toBeTruthy();
+    expect(screen.getByText('Digite uma busca')).toBeTruthy();
   });
 });

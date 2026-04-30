@@ -1,6 +1,8 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemeToggle, useTheme } from '@/src/design-system';
 
@@ -13,6 +15,9 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
+  const minimumBottomInset = Platform.OS === 'android' ? 28 : 12;
+  const bottomInset = Math.max(insets.bottom, minimumBottomInset);
 
   return (
     <Tabs
@@ -24,12 +29,12 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.border,
-          height: 64,
-          paddingBottom: 8,
+          height: 56 + bottomInset,
+          paddingBottom: bottomInset,
           paddingTop: 6,
         },
         tabBarItemStyle: {
-          minHeight: 52,
+          minHeight: 48,
         },
         tabBarLabelStyle: {
           fontSize: 10,
