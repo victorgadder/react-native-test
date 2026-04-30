@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -20,7 +20,7 @@ function getErrorMessage(error: unknown) {
     return error.message;
   }
 
-  return 'Nao foi possivel buscar repositorios. Tente novamente.';
+  return 'Não foi possível buscar repositórios. Tente novamente.';
 }
 
 export function RepositorySearchScreen() {
@@ -54,15 +54,11 @@ export function RepositorySearchScreen() {
 
   const renderRepository: ListRenderItem<GitHubRepository> = ({ item }) => (
     <RepositoryCard
-      onPress={() =>
-        router.push({
-          pathname: '/repository/[owner]/[repo]/index',
-          params: {
-            owner: item.owner.login,
-            repo: item.name,
-          },
-        })
-      }
+      onPress={() => {
+        const repositoryPath = `/repository/${item.owner.login}/${item.name}` as Href;
+
+        router.push(repositoryPath);
+      }}
       repository={item}
     />
   );
@@ -164,7 +160,7 @@ function SearchEmptyState({
     return (
       <Surface>
         <ActivityIndicator color={theme.colors.primary} />
-        <Text tone="muted">Buscando repositorios...</Text>
+        <Text tone="muted">Buscando repositórios...</Text>
       </Surface>
     );
   }
@@ -187,7 +183,7 @@ function SearchEmptyState({
     return (
       <Surface>
         <Heading level={3}>Sem resultados</Heading>
-        <Text tone="muted">Nenhum repositorio encontrado para essa busca.</Text>
+        <Text tone="muted">Nenhum repositório encontrado para essa busca.</Text>
       </Surface>
     );
   }
