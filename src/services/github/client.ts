@@ -42,7 +42,7 @@ async function requestGitHub<T>(path: string, params?: RequestParams): Promise<T
     }
 
     throw new GitHubApiError(
-      'Nao foi possivel conectar ao GitHub. Verifique sua conexao e tente novamente.',
+      'Não foi possível conectar ao GitHub. Verifique sua conexão e tente novamente.',
       'network',
     );
   }

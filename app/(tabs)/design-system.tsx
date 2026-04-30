@@ -45,10 +45,10 @@ export default function DesignSystemShowcaseScreen() {
 
       <View style={styles.section}>
         <Heading level={2}>Tipografia</Heading>
-        <Heading level={1}>Heading nivel 1</Heading>
-        <Heading level={2}>Heading nivel 2</Heading>
-        <Heading level={3}>Heading nivel 3</Heading>
-        <Text>Texto body padrao usando tokens do tema.</Text>
+        <Heading level={1}>Heading nível 1</Heading>
+        <Heading level={2}>Heading nível 2</Heading>
+        <Heading level={3}>Heading nível 3</Heading>
+        <Text>Texto body padrão usando tokens do tema.</Text>
         <Text size="sm" tone="muted">
           Texto muted em tamanho sm.
         </Text>
@@ -58,7 +58,7 @@ export default function DesignSystemShowcaseScreen() {
       </View>
 
       <View style={styles.section}>
-        <Heading level={2}>Botoes</Heading>
+        <Heading level={2}>Botões</Heading>
         <View style={styles.row}>
           <Button size="sm">Primary sm</Button>
           <Button>Primary md</Button>
@@ -81,19 +81,19 @@ export default function DesignSystemShowcaseScreen() {
           placeholder="react native"
           helperText="Digite ao menos 2 caracteres."
         />
-        <Input label="Com erro" value="r" error="Informe uma busca mais especifica." />
+        <Input label="Com erro" value="r" error="Informe uma busca mais específica." />
         <Input editable={false} label="Desabilitado" value="typescript" />
       </View>
 
       <View style={styles.section}>
         <Heading level={2}>Surfaces</Heading>
         <Surface>
-          <Heading level={3}>Surface padrao</Heading>
-          <Text tone="muted">Container base para blocos simples de conteudo.</Text>
+          <Heading level={3}>Surface padrão</Heading>
+          <Text tone="muted">Container base para blocos simples de conteúdo.</Text>
         </Surface>
         <Card elevated padding="lg">
           <Heading level={3}>Card elevado</Heading>
-          <Text tone="muted">Usado para itens repetidos, como repositorios e issues.</Text>
+          <Text tone="muted">Usado para itens repetidos, como repositórios e issues.</Text>
         </Card>
       </View>
 

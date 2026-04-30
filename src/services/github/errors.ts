@@ -21,18 +21,18 @@ export function createGitHubError(response: Response, payload?: GitHubErrorPaylo
 
   if (response.status === 403 && message.includes('rate limit')) {
     return new GitHubApiError(
-      'Limite de requisicoes do GitHub excedido. Tente novamente mais tarde ou configure um GITHUB_TOKEN.',
+      'Limite de requisições do GitHub excedido. Tente novamente mais tarde ou configure um EXPO_PUBLIC_GITHUB_TOKEN.',
       'rate-limit',
       response.status,
     );
   }
 
   if (response.status === 404) {
-    return new GitHubApiError('Repositorio nao encontrado.', 'not-found', response.status);
+    return new GitHubApiError('Repositório não encontrado.', 'not-found', response.status);
   }
 
   return new GitHubApiError(
-    'Nao foi possivel carregar os dados do GitHub. Tente novamente.',
+    'Não foi possível carregar os dados do GitHub. Tente novamente.',
     'unknown',
     response.status,
   );
