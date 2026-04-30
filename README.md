@@ -17,10 +17,15 @@ Aplicativo Expo com React Native e TypeScript para buscar repositórios público
 ## Funcionalidades
 
 - Busca de repositórios no GitHub ordenada por estrelas.
+- Campo de busca com debounce e persistência da última busca.
+- Ação para limpar rapidamente o termo pesquisado.
 - Lista com paginação infinita.
+- Feedback de fim de lista.
 - Pull-to-refresh na busca e nas issues.
+- Skeleton loading em estados de carregamento.
 - Tela de detalhes do repositório.
 - Tela de issues abertas do repositório.
+- Links para abrir repositórios e issues no GitHub.
 - Design System tipado com tokens, tema claro/escuro e componentes base.
 - Showcase do Design System.
 - Cache e controle de estados de carregamento/erro com TanStack Query.
@@ -103,9 +108,11 @@ O TanStack Query foi usado para cache e data fetching. A busca e a listagem de i
 
 O cliente do GitHub fica isolado em `src/services/github`, com tipos, funções de request e mensagens de erro amigáveis para casos como rate limit, rede e repositório não encontrado.
 
+Alguns utilitários puros, como formatação de números, data relativa e debounce, ficam em `src/utils` para evitar duplicação nas features.
+
 ## Testes
 
-Os testes usam Jest e React Native Testing Library. Há cobertura para renderização da tela de busca, tratamento de erros da API e formatação de data relativa.
+Os testes usam Jest e React Native Testing Library. Há cobertura para renderização da tela de busca, cards de repositório, cards de issue, tratamento de erros da API e formatação de data relativa.
 
 ```bash
 npm test
