@@ -29,6 +29,8 @@ Aplicativo Expo com React Native e TypeScript para buscar repositórios público
 - Design System tipado com tokens, tema claro/escuro e componentes base.
 - Showcase do Design System.
 - Cache e controle de estados de carregamento/erro com TanStack Query.
+- Ícone próprio do aplicativo, splash e favicon configurados.
+- Ajustes de acessibilidade e navegação por teclado na versão web.
 
 ## Instalação
 
@@ -109,6 +111,8 @@ O TanStack Query foi usado para cache e data fetching. A busca e a listagem de i
 O cliente do GitHub fica isolado em `src/services/github`, com tipos, funções de request e mensagens de erro amigáveis para casos como rate limit, rede e repositório não encontrado.
 
 Alguns utilitários puros, como formatação de números, data relativa e debounce, ficam em `src/utils` para evitar duplicação nas features.
+
+A interface considera diferenças entre web e mobile em pontos específicos, como safe area no Android, renderização válida de elementos interativos no React Native Web e fallback para data relativa quando `Intl.RelativeTimeFormat` não está disponível no runtime nativo.
 
 ## Testes
 

@@ -55,9 +55,9 @@ export function Avatar({ name, size = 'md', sourceUri }: AvatarProps) {
     >
       {sourceUri ? (
         <Image
+          resizeMode="cover"
           source={{ uri: sourceUri }}
           style={[
-            styles.image,
             {
               borderRadius: dimension / 2,
               height: dimension,
@@ -80,8 +80,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'center',
     overflow: 'hidden',
-  },
-  image: {
-    resizeMode: 'cover',
   },
 });
